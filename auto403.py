@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#! /usr/bin/python3
 # auto403 v0.1
 # Automated 403 Forbidden Bypass Testing Tool
 # By Mohamed Elsayed
@@ -26,7 +26,6 @@ from colorama import Fore, Style, init
 urllib3.disable_warnings()
 init(autoreset=True)
 
-# Banner
 BANNER = f"""
 {Style.BRIGHT}{Fore.RED}
  █████╗ ██╗   ██╗████████╗ ██████╗     ██╗  ██╗ ██████╗ ██████╗ 
@@ -34,17 +33,15 @@ BANNER = f"""
 ███████║██║   ██║   ██║   ██║   ██║    ███████║██║██╔██║ █████╔╝
 ██╔══██║██║   ██║   ██║   ██║   ██║    ╚════██║████╔╝██║ ╚═══██╗
 ██║  ██║╚██████╔╝   ██║   ╚██████╔╝         ██║╚██████╔╝██████╔╝
-╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝          ╚═╝ ╚═════╝ ╚═════╝ v0.3
+╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝          ╚═╝ ╚═════╝ ╚═════╝ v0.1
 {Fore.YELLOW}
         Automated 403 Forbidden Bypass Testing Tool
 {Fore.CYAN}
-                 * Supports Proxies Burp/ZAP
+                * Supports Proxies Burp/ZAP
 {Fore.WHITE}
-                 # Coded By Mohamed-Elsay3d
-{Style.RESET_ALL}
-"""
+          # Coded By Mohamed Elsayed - 0xkalil
+{Style.RESET_ALL}"""
 
-# Base headers
 BASE_HEADERS = {
     "Accept-Encoding": "gzip, deflate",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -54,7 +51,7 @@ BASE_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
 }
 
-# Path payloads
+
 PATH_PAYLOADS = [
     "",
     "/",
@@ -81,6 +78,7 @@ def build_header_payloads(path):
         {"X-Custom-IP-Authorization": "127.0.0.1"},
         {"X-Original-URL": path},
         {"X-Rewrite-URL": path},
+        {"Referer": path},
         {"Referer": "https://google.com"},
         {"Forwarded": "for=127.0.0.1"},
         {"X-Forwarded-Proto": "https"},
@@ -90,7 +88,7 @@ allowed_methods = []
 
 # Test allowed HTTP methods
 def method_tester(url):
-    print(f"{Fore.YELLOW}[i] Testing allowed HTTP methods...{Style.RESET_ALL}")
+    print(f"{Fore.YELLOW}\n[i] Testing allowed HTTP methods...{Style.RESET_ALL}")
     for method in ["GET", "POST", "HEAD", "PUT", "PATCH", "DELETE"]:
         try:
             r = requests.request(
@@ -143,9 +141,9 @@ def bypass_403(url, proxies=None):
                         all_reqs += 1
 
                         if r.status_code < 300 and abs(len(r.content) - baseline_len) > 50:
-                            print(f"                    \n{Style.BRIGHT}{Fore.GREEN}[+] BYPASS FOUND{Style.RESET_ALL}")
+                            print(f"                    \n{Style.BRIGHT}{Fore.GREEN}[ BYPASS FOUND ]{Style.RESET_ALL}")
                             print(f"{Fore.WHITE}URL     : {test_url}  =>  {r.url}")
-                            print(f"Method  : {method}")
+                            print(f"Method  : {Fore.YELLOW}{method}{Style.RESET_ALL}")
                             print(f"Headers : {payload}")
                             print(f"Status  : {Fore.GREEN}{r.status_code}{Style.RESET_ALL}")
                             print(f"Length  : {len(r.content)}")
@@ -169,6 +167,9 @@ if __name__ == "__main__":
     print(BANNER)
 
     target = input(f"{Fore.WHITE}[?] Enter forbidden URL: {Style.RESET_ALL}").strip()
+    if not target or "http" not in target:
+        print(f"{Fore.RED}[X] Invalid URL.")
+        exit()
     proxy_input = input(f"{Fore.WHITE}[?] Enter proxy (ip:port) or leave empty: {Style.RESET_ALL}").strip()
 
     proxies = None
